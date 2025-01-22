@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data_Access
+namespace Data_Access.Models
 {
     [Table("TableOfBooks")]
     public class Book

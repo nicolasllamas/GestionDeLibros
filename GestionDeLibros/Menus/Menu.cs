@@ -1,16 +1,22 @@
-﻿using BLL;
+﻿using Servicies;
+using Helper;
 using Repositories;
 
 namespace GestionDeLibros.Menus
 {
     public static class Menu
     {
-        private static BookService _bookService;
+        private static ServiceAddBook _serviceAddBook;
+        private static ServiceUpdateBook _serviceUpdateBook;
+        private static ServiceDeleteBook _serviceDeleteBook;
+        private static ServiceGetBook _serviceGetBook;
 
-        static Menu()
+        static Menu() // Initiating the servicies
         {
-            // Inicializa el servicio de libros
-            _bookService = new BookService(new BookRepository());
+            _serviceAddBook = new ServiceAddBook(new BookRepository(), new LogErrorRepository());
+            _serviceUpdateBook = new ServiceUpdateBook(new BookRepository(), new LogErrorRepository());
+            _serviceDeleteBook = new ServiceDeleteBook(new BookRepository(), new LogErrorRepository());
+            _serviceGetBook = new ServiceGetBook(new BookRepository(), new LogErrorRepository());
         }
 
         public static void ShowMenu()
@@ -23,35 +29,27 @@ namespace GestionDeLibros.Menus
                 Console.WriteLine("=== Gestion de Librería ===");
                 Console.WriteLine("1. Ver lista de libros");
                 Console.WriteLine("2. Agregar un nuevo libro");
-                Console.WriteLine("3. Modificar un libro existente");
-                Console.WriteLine("4. Eliminar un libro");
-                Console.WriteLine("5. Modificar stock de un libro");
-                Console.WriteLine("6. Modificar precio de un libro");
-                Console.WriteLine("7. Salir");
+                Console.WriteLine("3. Menú de Modificación");
+                Console.WriteLine("4. Menú de Eliminación");
+                Console.WriteLine("5. Salir");
                 Console.Write("\nSeleccione una opción: ");
 
-                var input = Console.ReadLine();
+                var input = InputHelper.GetValidInt(1, 5, GlobalErrorMessages.errorMessageInt);
                 switch (input)
                 {
-                    case "1":
+                    case 1:
                         ShowBooks();
                         break;
-                    case "2":
+                    case 2:
                         AddBook();
                         break;
-                    case "3":
-                        UpdateBook();
+                    case 3:
+                        MenuModifyBook.OpenModifyMenu(_serviceUpdateBook);
                         break;
-                    case "4":
-                        DeleteBook();
+                    case 4:
+                        MenuDeleteBook.OpenDeleteMenu(_serviceDeleteBook);
                         break;
-                    case "5":
-                        UpdateStock();
-                        break;
-                    case "6":
-                        UpdatePrice();
-                        break;
-                    case "7":
+                    case 5:
                         exit = true;
                         break;
                     default:
@@ -69,7 +67,7 @@ namespace GestionDeLibros.Menus
 
         private static void ShowBooks()
         {
-            var books = _bookService.GetAllBooks();
+            var books = _serviceGetBook.GetAllBooks();
 
             Console.Clear();
             Console.WriteLine("=== Lista de Libros ===");
@@ -81,7 +79,7 @@ namespace GestionDeLibros.Menus
                 {
                     string status = book.Stock > 0 ? "Disponible" : "Agotado";
 
-                    Console.WriteLine($"Título: {book.Title}, Autor: {book.Author}, Precio: ${book.Price:F2}, Stock: {book.Stock} ({status})");
+                    Console.WriteLine($"Id: {book.Id}, Título: {book.Title}, Autor: {book.Author}, Precio: ${book.Price:F2}, Stock: {book.Stock} ({status})");
                 }
             }
         }
@@ -92,105 +90,23 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Agregar un nuevo libro ===");
 
             Console.Write("Ingrese el título: ");
-            string title = Console.ReadLine();
+            string title = InputHelper.GetNotNullString(GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el autor: ");
-            string author = Console.ReadLine();
+            string author = InputHelper.GetNotNullString(GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el precio: ");
-            decimal price = decimal.Parse(Console.ReadLine());
+            decimal price = InputHelper.GetPositiveDecimal(GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el stock: ");
-            int stock = int.Parse(Console.ReadLine());
+            int stock = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
 
-            var success = _bookService.AddBook(title, author, stock, price);
+            var success = _serviceAddBook.AddBook(title, author, stock, price);
 
             if (success)
                 Console.WriteLine("\nLibro agregado correctamente.");
             else
                 Console.WriteLine("\nHubo un error al agregar el libro.");
-        }
-
-        private static void UpdateBook()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Modificar un libro existente ===");
-
-            Console.Write("Ingrese el ID del libro a modificar: ");
-            int id = int.Parse(Console.ReadLine());
-
-            Console.Write("Ingrese el nuevo título: ");
-            string title = Console.ReadLine();
-
-            Console.Write("Ingrese el nuevo autor: ");
-            string author = Console.ReadLine();
-
-            Console.Write("Ingrese el nuevo precio: ");
-            decimal price = decimal.Parse(Console.ReadLine());
-
-            Console.Write("Ingrese el nuevo stock: ");
-            int stock = int.Parse(Console.ReadLine());
-
-            var success = _bookService.UpdateBook(id, title, author, stock, price);
-
-            if (success)
-                Console.WriteLine("\nLibro modificado correctamente.");
-            else
-                Console.WriteLine("\nHubo un error al modificar el libro.");
-        }
-
-        private static void DeleteBook()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Eliminar un libro ===");
-
-            Console.Write("Ingrese el ID del libro a eliminar: ");
-            int id = int.Parse(Console.ReadLine());
-
-            var success = _bookService.DeleteBook(id);
-
-            if (success)
-                Console.WriteLine("\nLibro eliminado correctamente.");
-            else
-                Console.WriteLine("\nHubo un error al eliminar el libro.");
-        }
-
-        private static void UpdateStock()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Modificar el stock de un libro ===");
-
-            Console.Write("Ingrese el ID del libro: ");
-            int id = int.Parse(Console.ReadLine());
-
-            Console.Write("Ingrese el nuevo stock: ");
-            int stock = int.Parse(Console.ReadLine());
-
-            var success = _bookService.UpdateBookStock(id, stock);
-
-            if (success)
-                Console.WriteLine("\nStock modificado correctamente.");
-            else
-                Console.WriteLine("\nHubo un error al modificar el stock.");
-        }
-
-        private static void UpdatePrice()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Modificar el precio de un libro ===");
-
-            Console.Write("Ingrese el ID del libro: ");
-            int id = int.Parse(Console.ReadLine());
-
-            Console.Write("Ingrese el nuevo precio: ");
-            decimal price = decimal.Parse(Console.ReadLine());
-
-            var success = _bookService.UpdateBookPrice(id, price);
-
-            if (success)
-                Console.WriteLine("\nPrecio modificado correctamente.");
-            else
-                Console.WriteLine("\nHubo un error al modificar el precio.");
         }
     }
 }

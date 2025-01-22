@@ -1,4 +1,5 @@
 ﻿using Data_Access;
+using Data_Access.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
@@ -29,6 +30,13 @@ namespace Repositories
             _context.Books.Update(book);
             _context.SaveChanges();
         }
+        public void RestoreBook(int id) // soft delete
+        {
+            var book = _context.Books.Find(id);
+            book.IsDeleted = false;
+            _context.Books.Update(book);
+            _context.SaveChanges();
+        }
 
         public void HardDeleteBook(int id) // hard delete, in case it is needed in the future
         {
@@ -44,9 +52,5 @@ namespace Repositories
         {
             return _context.Books.ToList();
         }
-        //public void DetachBook(Book book)
-        //{
-        //    _context.Entry(book).State = EntityState.Detached;
-        //}
     }
 }
