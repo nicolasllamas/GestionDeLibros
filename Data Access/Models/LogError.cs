@@ -13,14 +13,13 @@ namespace Data_Access.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int LogErrorId { get; set; }
+
         [Column(TypeName = "datetime")]
-        public DateTime DateTime { get; set; }
+        public DateTime Datetime { get; set; }
+
         [Column(TypeName = "varchar(max)")]
         public string ErrorMessage { get; set; }
-        public LogError()
-        {
-            DateTime = DateTime.Now;
-        }
+
     }
 }

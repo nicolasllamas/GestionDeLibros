@@ -17,7 +17,7 @@ namespace Repositories
         }
         public void AddLogError(string mesaje)
         {
-            _context.LogErrors.Add(new LogError { ErrorMessage = mesaje });
+            _context.LogErrors.Add(new LogError { ErrorMessage = mesaje, Datetime = DateTime.Now }); 
             _context.SaveChanges();
         }
     }

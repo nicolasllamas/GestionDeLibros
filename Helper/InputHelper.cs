@@ -46,7 +46,6 @@
                     Console.WriteLine(errorMessage);
                 }
             }
-
             return result;
         }
     }

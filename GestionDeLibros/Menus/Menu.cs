@@ -34,7 +34,7 @@ namespace GestionDeLibros.Menus
                 Console.WriteLine("5. Salir");
                 Console.Write("\nSeleccione una opción: ");
 
-                var input = InputHelper.GetValidInt(1, 5, GlobalErrorMessages.errorMessageInt);
+                var input = InputHelper.GetValidInt(1, 5, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
                 switch (input)
                 {
                     case 1:
@@ -90,16 +90,16 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Agregar un nuevo libro ===");
 
             Console.Write("Ingrese el título: ");
-            string title = InputHelper.GetNotNullString(GlobalErrorMessages.errorMessageString);
+            string title = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el autor: ");
-            string author = InputHelper.GetNotNullString(GlobalErrorMessages.errorMessageString);
+            string author = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el precio: ");
-            decimal price = InputHelper.GetPositiveDecimal(GlobalErrorMessages.errorMessageString);
+            decimal price = InputHelper.GetPositiveDecimal(Common.Exceptions.GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el stock: ");
-            int stock = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int stock = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
             var success = _serviceAddBook.AddBook(title, author, stock, price);
 

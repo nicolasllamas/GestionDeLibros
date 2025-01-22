@@ -1,33 +1,39 @@
-﻿using Data_Access.Models;
+﻿using Common;
+using Data_Access.Models;
 using Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Exceptions;
 
 namespace Servicies
 {
     public class ServiceAddBook : AbstractService
     {
-        public ServiceAddBook(IBookRepository bookRepository, ILogErrorRepository logErrorRepository)
-            : base(bookRepository, logErrorRepository) { }
+        public ServiceAddBook(IBookRepository bookRepository, ILogErrorRepository logErrorRepository, IChangeLogRepository changeLogRepository)
+            : base(bookRepository, logErrorRepository, changeLogRepository) { }
 
-        public bool AddBook(string title, string author, int stock, decimal price)
+        public ResponseDTO AddBook(string title, string author, int stock, decimal price)
         {
-            bool bookAdded;
+            var response = new Common.ResponseDTO { IsSuccess = false };
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(author) || stock < 0 || price <= 0) bookAdded = false;
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(author) || stock < 0 || price <= 0)
+            {
+                response.Message = new InvalidInputException().Message;
+            }
 
             else
             {
-                bookAdded = TryExecute(() =>
+                response = TryExecute<InvalidInputException>(() =>
                 {
                     var book = new Book { Title = title, Author = author, Stock = stock, Price = price };
                     _bookRepository.AddBook(book);
-                }, "An error occurred while adding the book.");
+                    response.Result = book;
+                });
             }
-            return bookAdded;
+            return response;
         }
     }
 }

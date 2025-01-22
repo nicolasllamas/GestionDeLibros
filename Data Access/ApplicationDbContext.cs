@@ -9,6 +9,8 @@ namespace Data_Access
 
         public DbSet<LogError> LogErrors { get; set; }
 
+        public DbSet<ChangeLog> ChangeLog { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=localhost;" +

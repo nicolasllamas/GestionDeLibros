@@ -13,7 +13,7 @@ namespace Data_Access.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int LogId { get; set; }
+        public int ChangeLogId { get; set; }
 
         [Required]
         public int BookId { get; set; }

@@ -14,7 +14,7 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("2. Modificar el precio");
             Console.WriteLine("3. Modificar todo el registro");
 
-            var input = InputHelper.GetValidInt(1, 3, GlobalErrorMessages.errorMessageInt);
+            var input = InputHelper.GetValidInt(1, 3, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
             switch (input)
             {
                 case 1:
@@ -38,21 +38,21 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Modificar un libro existente ===");
 
             Console.Write("Ingrese el ID del libro a modificar: ");
-            int id = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
             if (_serviceUpdateBook.GetBookById(id) != null)
                 Console.WriteLine($"Ha seleccionado el libro " + _serviceUpdateBook.GetBookById(id).Title);
 
             Console.Write("Ingrese el nuevo título: ");
-            string title = InputHelper.GetNotNullString(GlobalErrorMessages.errorMessageString);
+            string title = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el nuevo autor: ");
-            string author = InputHelper.GetNotNullString(GlobalErrorMessages.errorMessageString);
+            string author = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el nuevo precio: ");
-            decimal price = InputHelper.GetPositiveDecimal(GlobalErrorMessages.errorMessageDecimal);
+            decimal price = InputHelper.GetPositiveDecimal(Common.Exceptions.GlobalErrorMessages.errorMessageDecimal);
 
             Console.Write("Ingrese el nuevo stock: ");
-            int stock = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int stock = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
             var success = _serviceUpdateBook.UpdateBook(id, title, author, stock, price);
 
@@ -68,12 +68,12 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Modificar el stock de un libro ===");
 
             Console.Write("Ingrese el ID del libro: ");
-            int id = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
             if (_serviceUpdateBook.GetBookById(id) != null)
                 Console.WriteLine($"Ha seleccionado el libro " + _serviceUpdateBook.GetBookById(id).Title);
 
             Console.Write("Ingrese el nuevo stock: ");
-            int stock = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int stock = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
             var success = _serviceUpdateBook.UpdateBookStock(id, stock);
 
@@ -89,12 +89,12 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Modificar el precio de un libro ===");
 
             Console.Write("Ingrese el ID del libro: ");
-            int id = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
             if (_serviceUpdateBook.GetBookById(id) != null)
                 Console.WriteLine($"Ha seleccionado el libro " + _serviceUpdateBook.GetBookById(id).Title);
 
             Console.Write("Ingrese el nuevo precio: ");
-            decimal price = InputHelper.GetPositiveDecimal(GlobalErrorMessages.errorMessageDecimal);
+            decimal price = InputHelper.GetPositiveDecimal(Common.Exceptions.GlobalErrorMessages.errorMessageDecimal);
 
             var success = _serviceUpdateBook.UpdateBookPrice(id, price);
 

@@ -15,7 +15,7 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("3. Eliminar un libro");
             Console.WriteLine("4. Eliminar un libro permanentemente");
 
-            var input = InputHelper.GetValidInt(1, 3, GlobalErrorMessages.errorMessageInt);
+            var input = InputHelper.GetValidInt(1, 3, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
             switch (input)
             {
                 case 1:
@@ -42,7 +42,7 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Eliminar un libro ===");
 
             Console.Write("Ingrese el ID del libro a eliminar: ");
-            int id = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
             if (_serviceDeleteBook.GetBookById(id) != null)
                 Console.WriteLine($"Ha seleccionado el libro " + _serviceDeleteBook.GetBookById(id).Title);
@@ -61,7 +61,7 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Restaurar un libro ===");
 
             Console.Write("Ingrese el ID del libro a eliminar: ");
-            int id = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
             if (_serviceDeleteBook.GetBookById(id) != null)
             {
@@ -105,7 +105,7 @@ namespace GestionDeLibros.Menus
             Console.WriteLine("=== Eliminar permanentemente un libro ===");
 
             Console.Write("Ingrese el ID del libro a eliminar: ");
-            int id = InputHelper.GetValidInt(0, GlobalErrorMessages.errorMessageInt);
+            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
             if (_serviceDeleteBook.GetBookById(id) != null)
             {
@@ -115,7 +115,7 @@ namespace GestionDeLibros.Menus
                 Console.WriteLine("1. Sí");
                 Console.WriteLine("2. No");
 
-                if (InputHelper.GetValidInt(1, 2, GlobalErrorMessages.errorMessageInt) == 1)
+                if (InputHelper.GetValidInt(1, 2, Common.Exceptions.GlobalErrorMessages.errorMessageInt) == 1)
                 {
                     var success = _serviceDeleteBook.HardDeleteBook(id);
                     if (success)
