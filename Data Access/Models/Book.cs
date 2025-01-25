@@ -9,7 +9,7 @@ namespace Data_Access.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int BookId { get; set; }
+        public Guid BookId { get; set; } = Guid.NewGuid();
 
         [Required]
         [Column(TypeName = "varchar(255)")]

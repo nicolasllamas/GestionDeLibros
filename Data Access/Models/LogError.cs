@@ -13,7 +13,7 @@ namespace Data_Access.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int LogErrorId { get; set; }
+        public Guid LogErrorId { get; set; } = Guid.NewGuid();
 
         [Column(TypeName = "datetime")]
         public DateTime Datetime { get; set; }

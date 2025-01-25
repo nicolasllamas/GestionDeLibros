@@ -8,6 +8,7 @@ namespace Repositories
 {
     public interface IChangeLogRepository
     {
-        void AddChangeLog(int bookId, string fieldName, string oldValue, string newValue);
+        void AddChangeLog(Guid bookId, string fieldName, string oldValue, string newValue);
+        void UnlinkBookFromChangeLogs(Guid bookId);
     }
 }

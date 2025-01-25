@@ -17,9 +17,9 @@ namespace Servicies
 
         public ResponseDTO AddBook(string title, string author, int stock, decimal price)
         {
-            var response = new Common.ResponseDTO { IsSuccess = false };
+            var response = new Common.ResponseDTO();
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(author) || stock < 0 || price <= 0)
+            if (!BookValidator.IsValidBookData(title, author, stock, price))
             {
                 response.Message = new InvalidInputException().Message;
             }
@@ -31,7 +31,7 @@ namespace Servicies
                     var book = new Book { Title = title, Author = author, Stock = stock, Price = price };
                     _bookRepository.AddBook(book);
                     response.Result = book;
-                });
+                }, response);
             }
             return response;
         }

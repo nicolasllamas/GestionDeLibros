@@ -23,30 +23,27 @@ namespace Repositories
             _context.Books.Update(book);
             _context.SaveChanges();
         }
-        public void DeleteBook(int id) // soft delete
+        public void DeleteBook(Book book) // soft delete
         {
-            var book = _context.Books.Find(id);
             book.IsDeleted = true;
             _context.Books.Update(book);
             _context.SaveChanges();
         }
-        public void RestoreBook(int id) // soft delete
+        public void RestoreBook(Book book) // soft delete
         {
-            var book = _context.Books.Find(id);
             book.IsDeleted = false;
             _context.Books.Update(book);
             _context.SaveChanges();
         }
 
-        public void HardDeleteBook(int id) // hard delete, in case it is needed in the future
+        public void HardDeleteBook(Book book) // hard delete, in case it is needed in the future
         {
-            var book = _context.Books.Find(id);
             _context.Books.Remove(book);
             _context.SaveChanges();
         }
-        public Book GetBookById(int id)
+        public Book GetBookByTitle(string title)
         {
-            return _context.Books.Find(id);
+            return _context.Books.FirstOrDefault(x => EF.Functions.Like(x.Title, $"%{title}%"));
         }
         public List<Book> GetAllBooks()
         {

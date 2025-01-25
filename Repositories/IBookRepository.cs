@@ -11,10 +11,10 @@ namespace Repositories
     {
         void AddBook(Book book);
         void UpdateBook(Book book);
-        void DeleteBook(int id);
-        void RestoreBook(int id);
-        void HardDeleteBook(int id);
-        Book GetBookById(int id);
+        void DeleteBook(Book book);
+        void RestoreBook(Book book);
+        void HardDeleteBook(Book book);
+        Book GetBookByTitle(string title);
         List<Book> GetAllBooks();
     }
 }

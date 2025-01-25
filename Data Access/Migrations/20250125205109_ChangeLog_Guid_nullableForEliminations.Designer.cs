@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250121212705_UpdatingLogErros")]
-    partial class UpdatingLogErros
+    [Migration("20250125205109_ChangeLog_Guid_nullableForEliminations")]
+    partial class ChangeLog_Guid_nullableForEliminations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace Data_Access.Migrations
 
             modelBuilder.Entity("Data_Access.Models.Book", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("BookId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Author")
                         .IsRequired()
@@ -50,29 +48,67 @@ namespace Data_Access.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.HasKey("Id");
+                    b.HasKey("BookId");
 
                     b.ToTable("TableOfBooks");
                 });
 
+            modelBuilder.Entity("Data_Access.Models.ChangeLog", b =>
+                {
+                    b.Property<Guid>("ChangeLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ChangeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("NewValue")
+                        .IsRequired()
+                        .HasColumnType("varchar(max)");
+
+                    b.Property<string>("OldValue")
+                        .IsRequired()
+                        .HasColumnType("varchar(max)");
+
+                    b.HasKey("ChangeLogId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("ChangeLogs");
+                });
+
             modelBuilder.Entity("Data_Access.Models.LogError", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("LogErrorId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("Datetime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("ErrorMessage")
                         .IsRequired()
                         .HasColumnType("varchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("LogErrorId");
 
                     b.ToTable("LogErrors");
+                });
+
+            modelBuilder.Entity("Data_Access.Models.ChangeLog", b =>
+                {
+                    b.HasOne("Data_Access.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId");
+
+                    b.Navigation("Book");
                 });
 #pragma warning restore 612, 618
         }

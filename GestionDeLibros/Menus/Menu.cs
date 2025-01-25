@@ -1,26 +1,15 @@
 ﻿using Servicies;
 using Helper;
 using Repositories;
+using Data_Access.Models;
 
 namespace GestionDeLibros.Menus
 {
     public static class Menu
     {
-        private static ServiceAddBook _serviceAddBook;
-        private static ServiceUpdateBook _serviceUpdateBook;
-        private static ServiceDeleteBook _serviceDeleteBook;
-        private static ServiceGetBook _serviceGetBook;
-
-        static Menu() // Initiating the servicies
-        {
-            _serviceAddBook = new ServiceAddBook(new BookRepository(), new LogErrorRepository());
-            _serviceUpdateBook = new ServiceUpdateBook(new BookRepository(), new LogErrorRepository());
-            _serviceDeleteBook = new ServiceDeleteBook(new BookRepository(), new LogErrorRepository());
-            _serviceGetBook = new ServiceGetBook(new BookRepository(), new LogErrorRepository());
-        }
-
         public static void ShowMenu()
         {
+            var services = new InitiateService();
             bool exit = false;
 
             while (!exit)
@@ -38,16 +27,16 @@ namespace GestionDeLibros.Menus
                 switch (input)
                 {
                     case 1:
-                        ShowBooks();
+                        ShowBooks(services);
                         break;
                     case 2:
-                        AddBook();
+                        AddBook(services);
                         break;
                     case 3:
-                        MenuModifyBook.OpenModifyMenu(_serviceUpdateBook);
+                        MenuModifyBook.OpenModifyMenu(services);
                         break;
                     case 4:
-                        MenuDeleteBook.OpenDeleteMenu(_serviceDeleteBook);
+                        MenuDeleteBook.OpenDeleteMenu(services);
                         break;
                     case 5:
                         exit = true;
@@ -65,26 +54,34 @@ namespace GestionDeLibros.Menus
             }
         }
 
-        private static void ShowBooks()
+        private static void ShowBooks(InitiateService services)
         {
-            var books = _serviceGetBook.GetAllBooks();
+            var response = services.serviceGetBook.GetAllBooks();
 
             Console.Clear();
             Console.WriteLine("=== Lista de Libros ===");
 
-            if (books.Count == 0) { Console.WriteLine("\nNo hay libros registrados."); }
+            if (response.IsSuccess == false) { Console.WriteLine(response.Message); }
+
             else
             {
-                foreach (var book in books)
+                if (response.IsSuccess == true && response.Result is List<Book> books && books.Count != 0)
                 {
-                    string status = book.Stock > 0 ? "Disponible" : "Agotado";
+                    foreach (var book in books)
+                    {
+                        string status = book.Stock > 0 ? "Disponible" : "Agotado";
 
-                    Console.WriteLine($"Id: {book.Id}, Título: {book.Title}, Autor: {book.Author}, Precio: ${book.Price:F2}, Stock: {book.Stock} ({status})");
+                        Console.WriteLine($"Título: {book.Title}, Autor: {book.Author}, Precio: ${book.Price:F2}, Stock: {book.Stock} ({status})");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nNo hay libros registrados.");
                 }
             }
         }
 
-        private static void AddBook()
+        private static void AddBook(InitiateService services)
         {
             Console.Clear();
             Console.WriteLine("=== Agregar un nuevo libro ===");
@@ -101,12 +98,28 @@ namespace GestionDeLibros.Menus
             Console.Write("Ingrese el stock: ");
             int stock = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
-            var success = _serviceAddBook.AddBook(title, author, stock, price);
+            var success = services.serviceAddBook.AddBook(title, author, stock, price);
 
-            if (success)
+            if (success.IsSuccess)
                 Console.WriteLine("\nLibro agregado correctamente.");
             else
                 Console.WriteLine("\nHubo un error al agregar el libro.");
+        }
+        internal static Book GetBookByTitle(InitiateService services, string title)
+        {
+            var response = services.serviceGetBook.SearchBookByTitle(title);
+
+            while (response.IsSuccess == false)
+            {
+                Console.WriteLine(response.Message);
+                Console.Write("Ingrese el título nuevamente: ");
+                title = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
+                response = services.serviceGetBook.SearchBookByTitle(title);
+            }
+
+            Console.WriteLine($"\nHa seleccionado el libro {(response.Result as Book).Title}.");
+
+            return response.Result as Book;
         }
     }
 }

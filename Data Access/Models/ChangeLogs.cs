@@ -13,10 +13,12 @@ namespace Data_Access.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ChangeLogId { get; set; }
+        public Guid ChangeLogId { get; set; } = Guid.NewGuid();
 
-        [Required]
-        public int BookId { get; set; }
+        public Guid? BookId { get; set; }
+
+        [ForeignKey("BookId")]
+        public Book Book { get; set; }
 
         [Required]
         [Column(TypeName = "varchar(255)")]

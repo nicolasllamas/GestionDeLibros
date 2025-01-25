@@ -6,7 +6,7 @@ namespace GestionDeLibros.Menus
 {
     public static class MenuModifyBook
     {
-        public static void OpenModifyMenu(ServiceUpdateBook _serviceUpdateBook)
+        internal static void OpenModifyMenu(InitiateService services)
         {
             Console.Clear();
             Console.WriteLine("=== Menú de Modificación ===");
@@ -18,13 +18,13 @@ namespace GestionDeLibros.Menus
             switch (input)
             {
                 case 1:
-                    UpdateStock(_serviceUpdateBook);
+                    UpdateStock(services);
                     break;
                 case 2:
-                    UpdatePrice(_serviceUpdateBook);
+                    UpdatePrice(services);
                     break;
                 case 3:
-                    UpdateBook(_serviceUpdateBook);
+                    UpdateBook(services);
                     break;
                 default:
                     Console.WriteLine("Opción no válida. Intente nuevamente.");
@@ -32,73 +32,70 @@ namespace GestionDeLibros.Menus
             }
         }
 
-        private static void UpdateBook(ServiceUpdateBook _serviceUpdateBook)
+        private static void UpdateBook(InitiateService services)
         {
             Console.Clear();
             Console.WriteLine("=== Modificar un libro existente ===");
 
-            Console.Write("Ingrese el ID del libro a modificar: ");
-            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
-            if (_serviceUpdateBook.GetBookById(id) != null)
-                Console.WriteLine($"Ha seleccionado el libro " + _serviceUpdateBook.GetBookById(id).Title);
+            Console.Write("Ingrese el título del libro a modificar: ");
+            string oldTitle = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
+            var book = Menu.GetBookByTitle(services, oldTitle);
 
             Console.Write("Ingrese el nuevo título: ");
-            string title = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
+            string newTitle = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el nuevo autor: ");
-            string author = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
+            string newAuthor = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
 
             Console.Write("Ingrese el nuevo precio: ");
-            decimal price = InputHelper.GetPositiveDecimal(Common.Exceptions.GlobalErrorMessages.errorMessageDecimal);
+            decimal newPrice = InputHelper.GetPositiveDecimal(Common.Exceptions.GlobalErrorMessages.errorMessageDecimal);
 
             Console.Write("Ingrese el nuevo stock: ");
-            int stock = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
+            int newStock = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
-            var success = _serviceUpdateBook.UpdateBook(id, title, author, stock, price);
+            var response = services.serviceUpdateBook.UpdateBook(book, newTitle, newAuthor, newStock, newPrice);
 
-            if (success)
+            if (response.IsSuccess)
                 Console.WriteLine("\nLibro modificado correctamente.");
             else
                 Console.WriteLine("\nHubo un error al modificar el libro.");
         }
 
-        private static void UpdateStock(ServiceUpdateBook _serviceUpdateBook)
+        private static void UpdateStock(InitiateService services)
         {
             Console.Clear();
             Console.WriteLine("=== Modificar el stock de un libro ===");
 
-            Console.Write("Ingrese el ID del libro: ");
-            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
-            if (_serviceUpdateBook.GetBookById(id) != null)
-                Console.WriteLine($"Ha seleccionado el libro " + _serviceUpdateBook.GetBookById(id).Title);
+            Console.Write("Ingrese el título del libro a modificar: ");
+            string oldTitle = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
+            var book = Menu.GetBookByTitle(services, oldTitle);
 
             Console.Write("Ingrese el nuevo stock: ");
             int stock = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
 
-            var success = _serviceUpdateBook.UpdateBookStock(id, stock);
+            var response = services.serviceUpdateBook.UpdateBookStock(book, stock);
 
-            if (success)
+            if (response.IsSuccess)
                 Console.WriteLine("\nStock modificado correctamente.");
             else
                 Console.WriteLine("\nHubo un error al modificar el stock.");
         }
 
-        private static void UpdatePrice(ServiceUpdateBook _serviceUpdateBook)
+        private static void UpdatePrice(InitiateService services)
         {
             Console.Clear();
             Console.WriteLine("=== Modificar el precio de un libro ===");
 
-            Console.Write("Ingrese el ID del libro: ");
-            int id = InputHelper.GetValidInt(0, Common.Exceptions.GlobalErrorMessages.errorMessageInt);
-            if (_serviceUpdateBook.GetBookById(id) != null)
-                Console.WriteLine($"Ha seleccionado el libro " + _serviceUpdateBook.GetBookById(id).Title);
+            Console.Write("Ingrese el título del libro a modificar: ");
+            string oldTitle = InputHelper.GetNotNullString(Common.Exceptions.GlobalErrorMessages.errorMessageString);
+            var book = Menu.GetBookByTitle(services, oldTitle);
 
             Console.Write("Ingrese el nuevo precio: ");
             decimal price = InputHelper.GetPositiveDecimal(Common.Exceptions.GlobalErrorMessages.errorMessageDecimal);
 
-            var success = _serviceUpdateBook.UpdateBookPrice(id, price);
+            var response = services.serviceUpdateBook.UpdateBookPrice(book, price);
 
-            if (success)
+            if (response.IsSuccess)
                 Console.WriteLine("\nPrecio modificado correctamente.");
             else
                 Console.WriteLine("\nHubo un error al modificar el precio.");
